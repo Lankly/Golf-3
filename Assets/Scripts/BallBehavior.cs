@@ -8,6 +8,11 @@ public class BallBehavior : MonoBehaviour
     private Camera main;
     public Text countText;
 
+    public int numberOfPlayers = 2;
+    public int activePlayer;
+
+    public int par = 3;
+    public Text holeText;
     private int stroke = 0;
 
 
@@ -35,6 +40,7 @@ public class BallBehavior : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         stroke = 0;
         updateCountText();
+        holeText.text = "";
     }
 
     // Update is called once per frame
@@ -42,6 +48,7 @@ public class BallBehavior : MonoBehaviour
     {
         // Do a check for ball movement before progressing to next turn
         // Clicking anywhere moves ball. No holding to power up shot yet
+        //BALL MOVEMENT CODE
         Vector3 ballVelocity = rb.velocity;
         if(ballVelocity.magnitude < minBallSpeed)
         {
@@ -90,9 +97,33 @@ public class BallBehavior : MonoBehaviour
             }
         }
 
-       
+      
     }
-
+    private void OnTriggerEnter(Collider other)
+    {
+        //Power Up and Hole Logic
+        if (other.gameObject.CompareTag("Power Up"))
+        {
+            other.gameObject.SetActive(false);
+        }
+        if (other.gameObject.CompareTag("Hole"))
+        {
+            rb.gameObject.SetActive(false);
+            if(stroke == 1)               { holeText.text = "Hole In One"; }
+            else if (stroke == (par - 4)) { holeText.text = "Dodo?"; }
+            else if (stroke == (par - 3)) { holeText.text = "Double Eagle"; }
+            else if (stroke == (par - 2)) { holeText.text = "Eagle"; }
+            else if (stroke == (par - 1)) { holeText.text = "Birdie"; }
+            else if (stroke == (par))     { holeText.text = "Par"; }
+            else if (stroke == (par + 1)) { holeText.text = "Bogie"; }
+            else if (stroke == (par + 2)) { holeText.text = "Double Bogie"; }
+            else if (stroke == (par + 3)) { holeText.text = "Triple Bogie"; }
+            else {
+                int overPar = stroke - par;
+                holeText.text = "+" + overPar.ToString();
+            }
+        }
+    }
     // Update, but for physics calculations
     private void FixedUpdate()
     {
