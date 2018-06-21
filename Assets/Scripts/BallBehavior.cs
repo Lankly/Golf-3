@@ -15,8 +15,10 @@ public class BallBehavior : MonoBehaviour
     public Text holeText;
     private int stroke = 0;
 
+    private int framesStopped = 0; // Frames since the ball has stopped moving quickly
 
-    private bool moving = false;
+
+    private bool moving = true;
     private float minBallSpeed = 2.0f;
     
     
@@ -52,11 +54,17 @@ public class BallBehavior : MonoBehaviour
         Vector3 ballVelocity = rb.velocity;
         if(ballVelocity.magnitude < minBallSpeed)
         {
-            moving = false;
-            rb.velocity = new Vector3(0, 0, 0);
+            framesStopped += 1;
+            if (framesStopped > 30) // If the ball hasn't moved much for 30 frames, then assume it's stopped moving forever.
+            {
+                rb.velocity = new Vector3(0, 0, 0);
+                // TODO: project ball down to terrain (it shouldn't stop in midair)
+                moving = false;
+            }
         }
         else
         {
+            framesStopped = 0;
             moving = true;
         }
         if (moving == false)
