@@ -4,6 +4,8 @@
 - [ ] Flag Movement
   - [ ] Up and Down with Ball
   - [ ] Waving in wind
+- [ ] Out Of Bounds check
+  - [ ] Allow player to "play it where it lies"?
 - [ ] Multiplayer **Priority**
   - [ ] Local Multiplayer **Priority**
     - [ ] Multiple balls being switched between **Priority**
@@ -14,6 +16,7 @@
   - [ ] Model a putter
   - [ ] Movement synced with the power meter
 - [ ] Power Ups
+  - [ ] Discuss how powerups will work (don't all have to be same system as U3DMGA2)
   - [ ] Discuss the types and playstyle of each power up
   - [ ] Implement the mechanics of use and displaying of having a power up
   - [ ] Graphics for each power up
@@ -28,3 +31,4 @@
   - [ ] Start Screen
   - [ ] Player Select
 - [ ] Model of golfer
+- [ ] Level editor?
