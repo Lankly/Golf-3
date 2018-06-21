@@ -7,7 +7,7 @@ public class BallBehavior : MonoBehaviour
     private Rigidbody rb;
     private Camera main;
     public Text countText;
-
+    
     public int numberOfPlayers = 2;
     public int activePlayer;
 
@@ -24,24 +24,47 @@ public class BallBehavior : MonoBehaviour
     
     //Speeds
     private float speed = 0.0f;
+    
     //This is the used to time how long the power meter is held
     private float fireTime = 0.0f;
+    
     //This is how long it takes to get to max power
     private float maxPowerTime = 5.0f;
+
     //This is what the power is multiplied by
     private float powerMult = 50000.0f;
 
-    // Use this for initialization
+    //These are for handling wanting to reline up the shot
+    //This is how long it takes to reset the power meter after max power has been held for a while
+    private float waitTime = 0.0f;
+    private float maxPowerWaitToReset = 2.0f;
+    private bool mouseClicked = false;
+    
+    //This is the text for power
+    private int powerPercent = 0;
+    public Text powerText;
+
+    //This updates the stroke count
     void updateCountText()
     {
         countText.text = "Stroke: " + stroke.ToString();
     }
+
+    //This updates the power meter
+    void updatePowerText()
+    {
+        powerPercent = (int)((fireTime*100.0f) / maxPowerTime);
+        powerText.text = "Power: " + powerPercent.ToString();
+    }
+
+    // Use this for initialization
     void Start()
     {
         main = Camera.main;
         rb = GetComponent<Rigidbody>();
         stroke = 0;
         updateCountText();
+        updatePowerText();
         holeText.text = "";
     }
 
@@ -60,6 +83,7 @@ public class BallBehavior : MonoBehaviour
                 rb.velocity = new Vector3(0, 0, 0);
                 // TODO: project ball down to terrain (it shouldn't stop in midair)
                 moving = false;
+                updatePowerText();
             }
         }
         else
@@ -67,14 +91,18 @@ public class BallBehavior : MonoBehaviour
             framesStopped = 0;
             moving = true;
         }
-        if (moving == false)
+
+        //We want to only take a stroke when the mouse was clicked and the ball was not moving
+        if ((moving == false) && (mouseClicked == true))
         {
             if (Input.GetMouseButton(0) && (fireTime < maxPowerTime))
             {
                 //This is where speed is increased
                 fireTime = fireTime + Time.deltaTime;
+                updatePowerText();
             }
-            else if (Input.GetMouseButtonUp(0) && (fireTime < maxPowerTime))
+            //Player releases mouse, power is less than max, and we have not exceeded the wait time
+            else if (Input.GetMouseButtonUp(0) && (fireTime <= maxPowerTime) && (waitTime < maxPowerWaitToReset))
             {
                 //This is where the ball is fired
                 speed = fireTime * powerMult;
@@ -93,16 +121,30 @@ public class BallBehavior : MonoBehaviour
                 stroke = stroke + 1;
                 updateCountText();
             }
-            else if (Input.GetMouseButtonUp(0) && fireTime >= maxPowerTime)
+            else if (waitTime < maxPowerWaitToReset)
+            {
+                waitTime = waitTime + Time.deltaTime;
+            }
+            //The player wants to redo the lining up of shot
+            else if ((waitTime >= maxPowerWaitToReset))
             {
                 //Overran the power meter
                 fireTime = 0.0f;
+                waitTime = 0.0f;
+                mouseClicked = false;
+                updatePowerText();
             }
             else
             {
                 fireTime = 0.0f;
                 speed = 0.0f;
+                updatePowerText();
             }
+        }
+        //This signals that the mouse has been clicked
+        else if (Input.GetMouseButtonDown(0) && mouseClicked == false)
+        {
+            mouseClicked = true;
         }
 
       

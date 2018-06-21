@@ -48,9 +48,12 @@ public class CameraBehavior : MonoBehaviour
         Transform tt = target.transform;
 
         // Camera moves to mouse input, so get mouse input
-        x += Input.GetAxis("Mouse X") * xSpeed * distance * 0.02f;
-        y -= Input.GetAxis("Mouse Y") * ySpeed * 0.02f;
-
+        //We dont want the player moving the camera while power is being used
+        if (!(Input.GetMouseButton(0)))
+        {
+            x += Input.GetAxis("Mouse X") * xSpeed * distance * 0.02f;
+            y -= Input.GetAxis("Mouse Y") * ySpeed * 0.02f;
+        }
         // Limit y axis (up & down) rotation
         y = ClampAngle(y, yMinLimit, yMaxLimit);
 
