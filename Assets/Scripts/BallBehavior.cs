@@ -8,8 +8,7 @@ public class BallBehavior : MonoBehaviour
     private Camera main;
     public Text countText;
     
-    public int numberOfPlayers = 2;
-    public int activePlayer;
+    
 
     public int par = 3;
     public Text holeText;

@@ -4,7 +4,16 @@ using UnityEngine;
 
 public class CameraBehavior : MonoBehaviour
 {
+    //The four players
     public GameObject target;
+    public GameObject target2;
+    public GameObject target3;
+    public GameObject target4;
+
+    //The number of players
+    public int playerCount = 2;
+    public int currentPlayer = 1;
+
     public float distance = 15f;
     public float xSpeed = 120.0f;
     public float ySpeed = 120.0f;
@@ -27,6 +36,7 @@ public class CameraBehavior : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetMouseButtonDown(1)) { SwitchNextPlayer(); }
     }
 
     // Update, but for physics calculations
@@ -108,5 +118,16 @@ public class CameraBehavior : MonoBehaviour
         }
 
         return Mathf.Clamp(angle, min, max);
+    }
+
+    void SwitchNextPlayer()
+    {
+        Debug.Log("test");
+        int nextPlayer = (currentPlayer + 1) % playerCount;
+        if(nextPlayer == 1) { ChangeTarget(target); }
+        else if(nextPlayer == 2) { ChangeTarget(target2); }
+        else if(nextPlayer == 3) { ChangeTarget(target3); }
+        else if(nextPlayer == 4) { ChangeTarget(target4); }
+        currentPlayer = nextPlayer;
     }
 }
